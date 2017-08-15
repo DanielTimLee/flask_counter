@@ -9,6 +9,9 @@ db = SQLAlchemy(app)
 from app.models import *
 db.create_all()
 
+
+from app.models.todo import TodoModel
+
 @app.route('/')
 def index():
     a=request.cookies.get('counter')
@@ -20,10 +23,23 @@ def index():
     else:
         a=a+1
 
-    print(a)
-
     resp = make_response(render_template('index.html',a=a))
     resp.set_cookie('counter',str(a))
-
     return resp
 
+@app.route('/todo', methods=['GET','POST'])
+def todo():
+
+    if request.method == 'POST':
+        print(request.form['todo'])
+        
+        new_todo = TodoModel(
+            content=request.form['todo']
+        )
+
+        db.session.add(new_todo)
+        db.session.commit()
+
+    todos = TodoModel.query.all()
+
+    return render_template('todo.html',todos=todos)

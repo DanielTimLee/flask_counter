@@ -31,3 +31,4 @@ class TodoModel(db.Model):
         TIMESTAMP,
         default=datetime.datetime.utcnow
     )
+
